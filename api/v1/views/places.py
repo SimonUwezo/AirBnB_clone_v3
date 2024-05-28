@@ -6,6 +6,11 @@ from api.v1.views import app_views
 from flask import abort, jsonify, request
 from models import storage
 from models.engine.db_storage import classes
+from models.city import City
+from models.place import Place
+from models.user import User
+from models.state import State
+from models.amenity import Amenity
 
 
 @app_views.route("/cities/<city_id>/places",
@@ -15,7 +20,7 @@ def get_places(city_id):
     """
     city = storage.get(classes["City"], city_id)
     if city is None:
-        abort(404)
+        abort(404,)
 
     places_list = []
     for place in city.places:
