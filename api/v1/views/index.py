@@ -1,44 +1,31 @@
 #!/usr/bin/python3
-"""
-index
+"""Routes Handling for the App.
+Routes:
+- GET /status: Returns the status of the API.
+- GET /stats: Retrieves the number of each object by type.
 """
 
-from flask import jsonify
 from api.v1.views import app_views
-
+from flask import Response, jsonify
 from models import storage
+from models.engine.db_storage import classes
 
 
-@app_views.route("/status", methods=['GET'], strict_slashes=False)
-def status():
-    """
-    status route
-    """
-    data = {
-        "status": "OK"
+@app_views.route("/status")
+def check_status():
+    """Returns the status of the API."""
+    return jsonify({"status": "OK"})
+
+
+@app_views.route("/stats")
+def num_objs():
+    """Retrieves the number of each objects by type."""
+    objects = {
+        "amenities": storage.count(classes["Amenity"]),
+        "cities": storage.count(classes["City"]),
+        "places": storage.count(classes["Place"]),
+        "reviews": storage.count(classes["Review"]),
+        "states": storage.count(classes["State"]),
+        "users": storage.count(classes["User"]),
     }
-
-    resp = jsonify(data)
-    resp.status_code = 200
-
-    return resp
-
-
-@app_views.route("/stats", methods=['GET'], strict_slashes=False)
-def stats():
-    """
-    stats of all
-    """
-    data = {
-        "amenities": storage.count("Amenity"),
-        "cities": storage.count("City"),
-        "places": storage.count("Place"),
-        "reviews": storage.count("Review"),
-        "states": storage.count("State"),
-        "users": storage.count("User"),
-    }
-
-    resp = jsonify(data)
-    resp.status_code = 200
-
-    return resp
+    return jsonify(objects)
