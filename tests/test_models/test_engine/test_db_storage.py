@@ -79,7 +79,7 @@ class TestFileStorage(unittest.TestCase):
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
 
-        state_data = ("name": "Newyork")
+        state_data = {"name": "Newyork"}
         new_state = State(**state_data)
         models.storage.new(new_state)
         models.storage.save()
@@ -90,19 +90,22 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
-    state_data = ("name": "Nairobi")
-    new_state = State(**state_data)
-    models.storage.new(new_state)
-    session = models.storage._DBStorage__session
-    retrieved_state = session.query(State).filter_by(new_state.id).first()
-    self.assertEqual(retrieved_state.id, new_state.id)
-    self.assertEqual(retrieved_state.name, new_state.name)
-    self.assertIsNone(retrieved_state)
+        state_data = {"name": "Nairobi"}
+        new_state = State(**state_data)
+        models.storage.new(new_state)
+        models.storage.save()
+        session = models.storage._DBStorage__session
+        retrieved_state = (
+                session.query(State).filter_by(new_state.id).first()
+        )
+        self.assertEqual(retrieved_state.id, new_state.id)
+        self.assertEqual(retrieved_state.name, new_state.name)
+        self.assertIsNone(retrieved_state)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
-        state_data = ("name": "Cairo")
+        state_data = {"name": "Cairo"}
         new_state = State(**state_data)
         models.storage.new(new_state)
         models.storage.save()
@@ -119,7 +122,7 @@ class TestFileStorage(unittest.TestCase):
 
         storage.reload()
 
-        state_data = ("name": "Mombasa")
+        state_data = {"name": "Mombasa"}
 
         state_instance = State(**state_data)
 
@@ -135,12 +138,12 @@ class TestFileStorage(unittest.TestCase):
         storage = models.storage
 
         storage.reload()
-        state_data = ("name": "Malindi")
+        state_data = {"name": "Malindi"}
         state_instance = State(**state_data)
 
         storage.new(state_instance)
 
-        city_data = ("name": "Sophie", "state_id": state_instance.id)
+        city_data = {"name": "Sophie", "state_id": state_instance.id}
 
         city_instance = City(**city_data)
 

@@ -121,7 +121,7 @@ class TestFileStorage(unittest.TestCase):
 
         storage.reload()
 
-        state_data = ("name": "Mombasa")
+        state_data = {"name": "Mombasa"}
 
         state_instance = State(**state_data)
 
@@ -138,12 +138,12 @@ class TestFileStorage(unittest.TestCase):
 
         storage.reload()
 
-        state_data = ("name": "Malindi")
+        state_data = {"name": "Malindi"}
         state_instance = State(**state_data)
 
         storage.new(state_instance)
 
-        city_data = ("name": "Sophie", "state_id": state_instance.id)
+        city_data = {"name": "Sophie", "state_id": state_instance.id}
 
         city_instance = City(**city_data)
 

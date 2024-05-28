@@ -1,46 +1,26 @@
 #!/usr/bin/python3
-"""
-app to be checked
-"""
-
 from flask import Flask, jsonify
-from flask_cors import CORS
-from os import getenv
-
 from api.v1.views import app_views
 from models import storage
-
+import os
 
 app = Flask(__name__)
-# Your route definitions go here
-
-if __name__ == "__main__":
-    app.run(host="localhost", port=5000)
-
-CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
-
 app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
 def teardown(exception):
-    """
-    teardown function
-    """
+    """Closes the database at the end of the request."""
     storage.close()
 
 
+# Custom error handler for 404 Not Found
 @app.errorhandler(404)
-def handle_404(exception):
-    """
-    handles 404 error
-    :return: returns 404 json
-    """
-    data = {
-        "error": "Not found"
-    }
+def not_found(error):
+    return jsonify({"error": "Not found"}), 404
 
-    resp = jsonify(data)
-    resp.status_code = 404
 
-    return (resp)
+if __name__ == "__main__":
+    host = os.getenv('HBNB_API_HOST', '0.0.0.0')
+    port = int(os.getenv('HBNB_API_PORT', 5000))
+    app.run(host=host, port=port, threaded=True)
